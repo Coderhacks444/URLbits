@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 
 export default function Dashboard() {
@@ -11,7 +11,6 @@ export default function Dashboard() {
   const [copySuccess, setCopySuccess] = useState(null);
   const [error, setError] = useState('');
 
-  // Get base path for GitHub Pages
   const getBasePath = () => {
     if (typeof window !== 'undefined') {
       return window.location.pathname.includes('/URLbits') ? '/URLbits' : '';
@@ -19,18 +18,13 @@ export default function Dashboard() {
     return '';
   };
 
-  useEffect(() => {
-    loadUrls();
-  }, []);
-
-  const loadUrls = () => {
+  const loadUrls = useCallback(() => {
     try {
       const storedUrls = JSON.parse(localStorage.getItem('shortenedUrls') || '{}');
       const urlList = Object.entries(storedUrls).map(([shortCode, data]) => {
-        // Handle both old string format and new object format
         const urlData = typeof data === 'string' ? { url: data, clicks: 0, createdAt: new Date().toISOString() } : data;
         const basePath = getBasePath();
-        
+
         return {
           shortCode,
           longUrl: urlData.url,
@@ -47,7 +41,11 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadUrls();
+  }, [loadUrls]);
 
   const deleteUrl = (shortCode) => {
     if (window.confirm('Are you sure you want to delete this URL? This action cannot be undone.')) {
@@ -161,15 +159,15 @@ export default function Dashboard() {
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
                   <th 
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                     onClick={() => toggleSort('createdAt')}
                   >
                     Created At {sortBy === 'createdAt' && (sortOrder === 'desc' ? '↓' : '↑')}
-                  </th>
+                    </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Short URL</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Original URL</th>
                   <th 
@@ -177,22 +175,22 @@ export default function Dashboard() {
                     onClick={() => toggleSort('clicks')}
                   >
                     Clicks {sortBy === 'clicks' && (sortOrder === 'desc' ? '↓' : '↑')}
-                  </th>
+                    </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
                 {filteredAndSortedUrls.map((url) => (
                   <tr key={url.shortCode} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {formatDate(url.createdAt)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                      </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-2">
-                        <a 
+                          <a 
                           href={url.shortUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                            target="_blank"
+                            rel="noopener noreferrer"
                           className="text-sm text-blue-600 hover:text-blue-800"
                         >
                           {url.shortUrl}
@@ -214,28 +212,28 @@ export default function Dashboard() {
                           )}
                         </button>
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
+                        </td>
+                        <td className="px-6 py-4">
                       <div className="text-sm text-gray-900 truncate max-w-xs" title={url.longUrl}>{url.longUrl}</div>
-                    </td>
+                        </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {url.clicks || 0}
-                    </td>
+                          {url.clicks || 0}
+                        </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button
-                        onClick={() => deleteUrl(url.shortCode)}
+                          <button
+                            onClick={() => deleteUrl(url.shortCode)}
                         className="text-red-600 hover:text-red-900"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
                 ))}
-              </tbody>
-            </table>
+                </tbody>
+              </table>
           </div>
         )}
       </div>
     </main>
   );
-} 
+}

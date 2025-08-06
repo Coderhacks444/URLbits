@@ -35,16 +35,16 @@ export default function About() {
               <h2 className="text-2xl font-semibold text-gray-800 mb-4">How It Works</h2>
               <ol className="list-decimal list-inside space-y-2">
                 <li>Enter your long URL in the input field</li>
-                <li>Click the "Shorten URL" button</li>
+                <li>Click the &quot;Shorten URL&quot; button</li>
                 <li>Get your shortened URL instantly</li>
                 <li>Share your shortened URL anywhere</li>
               </ol>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Privacy & Security</h2>
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">Privacy &amp; Security</h2>
               <p className="leading-relaxed">
-                We take your privacy seriously. Our service doesn't store any personal information, 
+                We take your privacy seriously. Our service doesn&apos;t store any personal information, 
                 and we use industry-standard security measures to protect your data. All URLs are 
                 encrypted and stored securely.
               </p>
@@ -63,4 +63,4 @@ export default function About() {
       </div>
     </main>
   );
-} 
+}

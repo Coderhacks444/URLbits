@@ -1,17 +1,14 @@
 'use client';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { use } from 'react';
 
 export default function ShortUrlRedirect({ params }) {
   const router = useRouter();
-  const unwrappedParams = use(params);
-  const shortCode = unwrappedParams.shortCode;
+  const shortCode = params.shortCode;
 
   useEffect(() => {
     const redirectToLongUrl = () => {
       try {
-        // Validate shortCode format
         if (!/^[A-Za-z0-9]{6}$/.test(shortCode)) {
           router.push('/?error=' + encodeURIComponent('Invalid URL format'));
           return;
@@ -19,15 +16,14 @@ export default function ShortUrlRedirect({ params }) {
 
         const urls = JSON.parse(localStorage.getItem('shortenedUrls') || '{}');
         const urlData = urls[shortCode];
-        
+
         if (urlData) {
           // Update click count and last accessed time
           urlData.clicks = (urlData.clicks || 0) + 1;
           urlData.lastAccessed = new Date().toISOString();
           urls[shortCode] = urlData;
           localStorage.setItem('shortenedUrls', JSON.stringify(urls));
-          
-          // Redirect to the original URL
+
           const longUrl = typeof urlData === 'string' ? urlData : urlData.url;
           window.location.href = longUrl;
         } else {
@@ -51,4 +47,4 @@ export default function ShortUrlRedirect({ params }) {
       </div>
     </div>
   );
-} 
+}
