@@ -1,12 +1,14 @@
 'use client';
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 
-export default function ShortUrlRedirect({ params }) {
+export default function ShortUrlRedirect() {
   const router = useRouter();
-  const shortCode = params.shortCode;
+  const params = useParams();
+  const shortCode = params?.shortCode;
 
   useEffect(() => {
+    if (!shortCode) return; // Wait for shortCode to be available
     const redirectToLongUrl = () => {
       try {
         if (!/^[A-Za-z0-9]{6}$/.test(shortCode)) {
