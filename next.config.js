@@ -1,10 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,       // Good: catches bugs in dev
-  swcMinify: true,             // Good: makes JS smaller
-  trailingSlash: true,         // Optional: adds '/' at end of URLs
+  output: 'export',
+  trailingSlash: true,
   images: {
-    unoptimized: true          // Good if you're deploying statically or not using image optimization
+    unoptimized: true
   },
   basePath: process.env.NODE_ENV === 'production' ? '/URLbits' : '',
   assetPrefix: process.env.NODE_ENV === 'production' ? '/URLbits/' : '',

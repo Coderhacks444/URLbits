@@ -91,6 +91,38 @@ function Home() {
     if (errorParam) {
       setError(decodeURIComponent(errorParam));
     }
+
+    // Handle redirect if this is a short URL
+    const handleRedirect = () => {
+      const path = window.location.pathname;
+      const basePath = getBasePath();
+      let shortCode = path.replace(basePath, '').replace(/^\//g, '').replace(/\/$/, '');
+      
+      if (shortCode && shortCode !== 'dashboard' && shortCode !== 'about' && /^[A-Za-z0-9]{6}$/.test(shortCode)) {
+        try {
+          const urls = JSON.parse(localStorage.getItem('shortenedUrls') || '{}');
+          const urlData = urls[shortCode];
+          
+          if (urlData) {
+            urlData.clicks = (urlData.clicks || 0) + 1;
+            urlData.lastAccessed = new Date().toISOString();
+            urls[shortCode] = urlData;
+            localStorage.setItem('shortenedUrls', JSON.stringify(urls));
+            
+            const longUrl = typeof urlData === 'string' ? urlData : urlData.url;
+            window.location.href = longUrl;
+            return;
+          } else {
+            setError('Short URL not found');
+          }
+        } catch (error) {
+          console.error('Error redirecting:', error);
+          setError('Failed to redirect');
+        }
+      }
+    };
+    
+    handleRedirect();
   }, [searchParams]);
 
   const validateUrl = (url) => {
