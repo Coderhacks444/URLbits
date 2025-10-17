@@ -11,11 +11,8 @@ function Home() {
   const [copySuccess, setCopySuccess] = useState(false);
   const searchParams = useSearchParams();
 
-  // Get base path for GitHub Pages
+  // Get base path
   const getBasePath = () => {
-    if (typeof window !== 'undefined') {
-      return window.location.pathname.includes('/URLbits') ? '/URLbits' : '';
-    }
     return '';
   };
 
